@@ -1,0 +1,326 @@
+CREATE DATABASE perpustakaan;
+show databases;
+use perpustakaan;
+drop database perpustakaan;
+
+create table orang(
+KTP VARCHAR(30) NOT NULL UNIQUE,
+Nama_orang VARCHAR(30) NOT NULL
+);
+
+describe orang;
+select * from orang;
+ 
+create table petugas(
+id_petugas INTEGER(5) unique NOT NULL,
+KTP VARCHAR(16) NOT NULL UNIQUE, 
+id_peminjaman INTEGER(5) NULL,
+username VARCHAR(30) NOT NULL,
+passwd VARCHAR(30) NOT NULL,
+jabatan VARCHAR(15) NOT NULL,
+foreign key(KTP) references orang(KTP),
+foreign key(id_peminjaman) references waktu_peminjaman(id_peminjaman)
+);
+
+describe petugas;
+select * from petugas;
+
+create table anggota(
+id_anggota INTEGER(5) NOT NULL unique KEY,
+KTP VARCHAR(16) NOT NULL UNIQUE,
+id_peminjaman INTEGER(5) NULL,
+jenis_kelamin VARCHAR(10) NOT NULL,
+alamat VARCHAR(30) NOT NULL,
+foreign key(KTP) references orang(KTP),
+foreign key(id_peminjaman) references waktu_peminjaman(id_peminjaman)
+);
+
+describe anggota;
+select * from anggota;
+
+create table dosen(
+nip varchar(20) NOT NULL unique,
+id_anggota INTEGER(5) NOT NULL PRIMARY KEY,
+foreign key(id_anggota) references anggota(id_anggota)
+);
+
+describe dosen;
+select * from dosen;
+
+create table mahasiswa(
+nis varchar(20) NOT NULL unique,
+id_anggota INTEGER(5) NOT NULL PRIMARY KEY,
+foreign key(id_anggota) references anggota(id_anggota)
+);
+
+describe mahasiswa;
+select * from mahasiswa;
+
+create table staff(
+nip varchar(20) NOT NULL unique,
+id_anggota INTEGER(5) NOT NULL PRIMARY KEY,
+foreign key(id_anggota) references anggota(id_anggota)
+);
+
+describe staff;
+select * from staff;
+
+create table waktu_peminjaman(
+id_peminjaman INTEGER(5) NOT NULL PRIMARY KEY,
+tgl_peminjaman date NOT NULL,
+tgl_kmblPeminjaman date NOT NULL
+);
+
+describe waktu_peminjaman;
+select * from waktu_peminjaman;
+alter table buku modify tahunTerbit year(4) NOT NULL;
+
+create table buku(
+id_buku INTEGER(5) NOT NULL PRIMARY KEY,
+penerbit_buku varchar(20) NOT NULL,
+judul varchar(20) NOT NULL,
+tahunTerbit DATE NOT NULL,
+id_peminjaman INTEGER(5) NULL,
+stok INT(5) NOT NULL,
+foreign key(id_peminjaman) references waktu_peminjaman(id_peminjaman)
+);
+
+describe buku;
+select * from buku;
+
+alter table stok to jumlah;
+
+create table pengarang(
+id_pengarang INTEGER(5) NOT NULL UNIQUE,
+nama_pengarang varchar(30) NOT NULL,
+id_buku INTEGER(5) NOT NULL,
+foreign key(id_buku) references buku(id_buku)
+);
+
+
+
+SELECT * FROM pengarang;
+create table kategori_buku(
+id_kategori INTEGER(5) NOT NULL PRIMARY KEY,
+nama varchar(20) NOT NULL,
+id_buku INTEGER(5) NOT NULL,
+foreign key(id_buku) references buku(id_buku)
+);
+describe kategori_buku;
+select * from kategori_buku;
+
+
+
+insert into orang values('3573051712020001', 'Maulana M'),
+						('3533467457068061', 'Tidona Pateu'),
+                        ('3573862224850045', 'Anggo Julian'),
+                        ('3451957728471021', 'Kala Nadia');
+insert into orang values('3264758233462718', 'Ria Dilana'),
+						('3728556211134683', 'Juan Bernar'),
+                        ('3852613466613853', 'Masi Kolina'),
+                        ('3257369216443227', 'Dedina Sila');
+
+
+
+
+select * from orang;
+
+insert into waktu_peminjaman values(1, '2022-05-17', '2022-05-29'),
+									(2, '2022-08-02', '2022-08-16'),
+                                    (3, '2022-09-13', '2022-09-20');
+insert into waktu_peminjaman values(4, '2022-07-06', '2022-07-15'),
+								   (5, '2022-07-16', '2022-07-23'),
+                                   (6, '2022-08-10', '2022-08-19');
+
+update waktu_peminjaman 
+set tgl_kmblPeminjaman = '2022-08-16'
+where id_peminjaman = 2;
+
+
+select * from waktu_peminjaman;
+
+insert into petugas value(1, '3533467457068061', 2, 'Tidona21', 'Teu765ona', 'superUser'),
+						 (2, '3573051712020001', 1, 'Maulana98', 'Ulana321ud', 'user');
+                         
+select * from petugas;
+                         
+insert into anggota values(1, '3573862224850045', 3, 'M', 'Jl.Gatot subroto no 08'),
+                         (2, '3451957728471021', 5, 'F', 'Jl.Ahmad yani no 06'),
+                         (3, '3264758233462718', 4, 'F', 'Jl.Soekarno no 01'),
+                         (4, '3728556211134683', 6, 'M', 'Jl.Sutoyo no 33'),
+                         (5, '3852613466613853', 2, 'F', 'Jl.M.Yamin no 12'),
+						 (6, '3257369216443227', 1, 'F', 'Jl.Sudirman no 04');
+                         
+
+
+delete from anggota where id_anggota = 7;
+
+
+
+                         
+select * from anggota; 
+
+insert into dosen values('1726111756328', 1),
+						('1628464522419', 2);
+
+
+delete from dosen where id_anggota = 7;
+
+
+select * from dosen;
+
+insert into mahasiswa value('215150601111018', 3),
+						   ('215150601110017', 4);
+select * from mahasiswa;
+
+insert into staff values('1843113238248', 5),
+						('1835466236611', 6);
+select * from staff;
+
+insert into buku values(1, 'Gramedia', 'Atomic Habits', '2018', 1, 4),
+						(2, 'Gramedia', 'Rich Dad Poor Dad', '1927', 2, 3),
+                        (3, 'Gramedia', 'The Psychology of Money', '2020', 3, 2),
+                        (4, 'Gramedia', 'How to Win Friends and Influence People', '1936', 4,2),
+                        (5, 'Gramedia', 'Think and grow rich', '1937', 5,3),
+                        (6, 'Gramedia', 'The law of success', '1928', 6,4);
+select * from buku;    
+
+insert into pengarang values(1,'James Clare',1),
+							(2,'Robert Kiyosaki',2),
+                            (3,'Morgan Housel',3),
+                            (4,'Dale Carnegie',4),
+                            (5,'Napoleon Hill',5),
+                            (6,'Napoleon Hill',6);
+                            
+select * from pengarang;
+
+insert into kategori_buku values(1, 'Self Help', 1),
+								(2, 'Keuangan', 2),
+                                (3, 'Keuangan', 3),
+                                (4, 'Social',4),
+                                (5, 'Self Help', 5),
+                                (6, 'Self Help',6);
+                                
+select * from kategori_buku;
+
+create view lispetugas as
+select nama_orang, username, passwd, jabatan from orang o, petugas p
+where o.ktp = p.ktp;
+
+select * from lispetugas;
+
+create view lisanggota as
+select nama_orang, a.KTP, jenis_kelamin, alamat from orang o, anggota a
+where o.ktp = a.ktp;
+
+select * from lisanggota;
+
+create view lisdosen as
+select nama_orang, nip, jenis_kelamin, alamat from orang o, anggota a, dosen d
+where o.ktp = a.ktp and a.id_anggota = d.id_anggota;
+
+select * from lisdosen;
+
+create view lismahasiswa as
+select nama_orang, nis, jenis_kelamin, alamat from orang o, anggota a, mahasiswa m
+where o.ktp = a.ktp and a.id_anggota = m.id_anggota;
+
+select * from lismahasiswa;
+
+create view lisstaff as
+select nama_orang, nip, jenis_kelamin, alamat from orang o, anggota a, staff s
+where o.ktp = a.ktp and a.id_anggota = s.id_anggota;
+
+select * from lisstaff;
+
+create view list_PeminjamanDosen as
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman from orang o, anggota a, dosen d, waktu_peminjaman w
+where o.ktp = a.ktp and a.id_anggota  = d.id_anggota and w.id_peminjaman = a.id_peminjaman;
+
+select * from list_PeminjamanDosen;
+
+create view list_PeminjamanMahasiswa as
+select nama_orang, nis, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman from orang o, anggota a, mahasiswa m, waktu_peminjaman w
+where o.ktp = a.ktp and a.id_anggota  = m.id_anggota and w.id_peminjaman = a.id_peminjaman;
+
+select * from list_PeminjamanMahasiswa;
+
+create view list_PeminjamanStaff as
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman from orang o, anggota a, staff s, waktu_peminjaman w
+where o.ktp = a.ktp and a.id_anggota  = s.id_anggota and w.id_peminjaman = a.id_peminjaman;
+
+select * from list_PeminjamanStaff;
+
+create view PeminjamanbukuDosen as
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman, judul, tahunTerbit, nama_pengarang 
+from orang o,anggota a, dosen d, waktu_peminjaman w, buku b,pengarang p
+where o.ktp = a.ktp and a.id_anggota = d.id_anggota and w.id_peminjaman = a.id_peminjaman and b.id_peminjaman = a.id_peminjaman and  b.id_buku = p.id_buku;
+
+
+select * from PeminjamanbukuDosen;
+
+
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman, judul, tahunTerbit, nama_pengarang, nama, stok
+from orang o,anggota a, dosen d, waktu_peminjaman w, buku b, kategori_buku k,pengarang p
+where o.ktp = a.ktp and a.id_anggota = d.id_anggota and w.id_peminjaman = a.id_peminjaman and b.id_peminjaman = a.id_peminjaman and k.id_buku = b.id_buku and b.id_buku = p.id_buku;
+
+create view PeminjamanolehDosen as
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman, judul, tahunTerbit, nama_pengarang, nama, concat(datediff(tgl_kmblPeminjaman, tgl_peminjaman), ' hari') as durasiPeminjaman,stok
+from orang o,anggota a, dosen d, waktu_peminjaman w, buku b, kategori_buku k, pengarang p
+where o.ktp = a.ktp and a.id_anggota = d.id_anggota and w.id_peminjaman = a.id_peminjaman and b.id_peminjaman = a.id_peminjaman and k.id_buku = b.id_buku and b.id_buku = p.id_buku ;
+
+select * from PeminjamanolehDosen; 
+
+create view PeminjamanbukuMahasiswa as
+select nama_orang, nis, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman, judul, tahunTerbit, nama_pengarang, nama, concat(datediff(tgl_kmblPeminjaman, tgl_peminjaman), ' hari') as durasiPeminjaman,stok
+from orang o,anggota a, mahasiswa m, waktu_peminjaman w, buku b, kategori_buku k, pengarang p
+where o.ktp = a.ktp and a.id_anggota = m.id_anggota and w.id_peminjaman = a.id_peminjaman and b.id_peminjaman = a.id_peminjaman and k.id_buku = b.id_buku and b.id_buku = p.id_buku ;
+
+select * from PeminjamanbukuMahasiswa;
+
+create view PeminjamanbukuStaff as
+select nama_orang, nip, jenis_kelamin, alamat, tgl_peminjaman, tgl_kmblPeminjaman, judul, tahunTerbit, nama_pengarang, nama, concat(datediff(tgl_kmblPeminjaman, tgl_peminjaman), ' hari') as durasiPeminjaman,stok
+from orang o,anggota a, staff s, waktu_peminjaman w, buku b, kategori_buku k, pengarang p
+where o.ktp = a.ktp and a.id_anggota = s.id_anggota and w.id_peminjaman = a.id_peminjaman and b.id_peminjaman = a.id_peminjaman and k.id_buku = b.id_buku and b.id_buku = p.id_buku ;
+
+select * from PeminjamanbukuStaff;
+
+
+
+select * from buku, kategori_buku;
+
+select KTP, nama_orang
+from orang where nama_orang like '%A'
+union
+select KTP, nama_orang 
+from orang where KTP like '%3';
+
+select KTP, nama_orang
+from orang where nama_orang like '%A'
+union ALL
+select KTP, nama_orang 
+from orang where KTP like '%3';
+
+
+
+
+
+DELIMITER //
+
+CREATE FUNCTION Stok(n INT,m INT)
+  RETURNS VARCHAR(50)
+
+  BEGIN 
+    DECLARE s VARCHAR(50);
+    IF n > 0 
+    PRINT s'Stok Tersedia';
+    ELSE IF n = 0 
+    PRINT s'Stok Tidak Tersedia'
+	SET s = CONCAT('BUKU = ',m, s, n,'.');
+	
+    RETURN s;
+    end;
+   
+DELIMITER ;
+
+select if ('100','Stok ada','Stok tidak ada') as 'Stok barang';
